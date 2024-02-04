@@ -16,7 +16,12 @@ import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import SinglePost from '../components/reusable/SinglePost';
 
-const Profile = props => {
+const Profile = ({navigation}) => {
+  const handleEditPress = () => {
+    console.log('test');
+    navigation.navigate('EditProfile');
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.top}>
@@ -48,7 +53,7 @@ const Profile = props => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.editProfile}>
+        <TouchableOpacity onPress={handleEditPress} style={styles.editProfile}>
           <Icon name="edit" size={16} color={'#7752FE'} />
           <Text style={styles.editTxt}>EDIT PROFILE</Text>
         </TouchableOpacity>

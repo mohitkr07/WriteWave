@@ -120,7 +120,7 @@ const BottomTabNavigator = props => {
         name="Post"
         component={Notification}
       />
-      <Tab.Screen name="Notification" component={Profile} />
+      <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
