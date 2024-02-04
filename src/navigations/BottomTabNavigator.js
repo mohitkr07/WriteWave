@@ -20,7 +20,7 @@ const CustomTabBarIcon = ({focused, source, label}) => {
     return (
       <Icon3
         name={focused ? source.name2 : source.name}
-        color={focused ? 'red' : 'black'}
+        color={focused ? '#190482' : 'black'}
         size={responsiveHeight(2.8)}
       />
     );
@@ -29,7 +29,7 @@ const CustomTabBarIcon = ({focused, source, label}) => {
     return (
       <Icon2
         name={focused ? source.name : source.name2}
-        color={focused ? 'red' : 'black'}
+        color={focused ? '#190482' : 'black'}
         size={responsiveHeight(2.5)}
       />
     );
@@ -37,7 +37,7 @@ const CustomTabBarIcon = ({focused, source, label}) => {
   return (
     <Icon
       name={focused ? source.name : source.name2}
-      color={focused ? 'red' : 'black'}
+      color={focused ? '#190482' : 'black'}
       size={
         source.name === 'user' && focused
           ? responsiveHeight(2.9)
@@ -57,7 +57,7 @@ const BottomTabNavigator = props => {
           paddingTop: 5,
           height: responsiveHeight(7),
         },
-        tabBarActiveTintColor: 'red',
+        tabBarActiveTintColor: '#190482',
         tabBarHideOnKeyboard: true,
         tabBarIcon: ({focused}) => {
           let source;
@@ -120,7 +120,7 @@ const BottomTabNavigator = props => {
         name="Post"
         component={Notification}
       />
-      <Tab.Screen name="Notification" component={Profile} />
+      <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
