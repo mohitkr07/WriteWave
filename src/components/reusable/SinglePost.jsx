@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import TestCreation from '../../assets/images/test.jpg';
+import Test2Creation from '../../assets/images/test2.jpg';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -15,6 +16,11 @@ import Icon4 from 'react-native-vector-icons/Fontisto';
 
 const SinglePost = () => {
   const [liked, setLiked] = useState(true);
+  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
+
+  const handleCommentPress = () => {
+    setCommentModalVisible(true);
+  };
 
   const handleLike = () => {
     setLiked(!liked);
@@ -37,7 +43,7 @@ const SinglePost = () => {
 
       {/* creation */}
       <View style={styles.creation}>
-        <Image source={TestCreation} style={styles.creationPic} />
+        <Image source={Test2Creation} style={styles.creationPic} />
       </View>
 
       {/* Engagement */}
@@ -52,7 +58,9 @@ const SinglePost = () => {
                 style={{marginRight: 15}}
               />
             </Pressable>
-            <Icon4 name="comment" size={23} color={'black'} />
+            <Pressable onPress={handleCommentPress}>
+              <Icon4 name="comment" size={23} color={'black'} />
+            </Pressable>
           </View>
           <View style={styles.share}>
             <Icon2
@@ -73,24 +81,21 @@ const SinglePost = () => {
           #alone #meaningful #relatable #alone_soul #life{' '}
         </Text>
       </View>
+
+      {/* Render the CommentModal component */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: 'red',
-    // borderBottomWidth: 1,
-    // borderBottomColor: 'grey',
     flex: 1,
     paddingBottom: 10,
   },
-  //   tags
   tags: {
     paddingHorizontal: responsiveWidth(3),
     paddingBottom: 5,
   },
-  //   top
   top: {
     height: 65,
     flexDirection: 'row',
