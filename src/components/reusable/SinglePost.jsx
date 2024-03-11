@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import TestCreation from '../../assets/images/test.jpg';
 import Test2Creation from '../../assets/images/test2.jpg';
@@ -13,17 +13,32 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Icon4 from 'react-native-vector-icons/Fontisto';
+import {hitLike} from '../../redux/slices/general';
+import {useDispatch} from 'react-redux';
 
-const SinglePost = () => {
-  const [liked, setLiked] = useState(true);
+const SinglePost = ({post}) => {
+  const dispatch = useDispatch();
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
+
+  const [postDetail, setPostDetail] = useState(post);
+  const [postLiked, setLiked] = useState(postDetail?.liked);
+
+  // useEffect(() => {
+  //   setPostDetail();
+  // }, [postDetail]);
+
+  console.log('postDetail', postDetail);
 
   const handleCommentPress = () => {
     setCommentModalVisible(true);
   };
 
   const handleLike = () => {
-    setLiked(!liked);
+    dispatch(hitLike(postDetail?._id)).then(res => {
+      setPostDetail(res.payload.post);
+      console.log('after Like', res.payload.post);
+      setLiked(!postLiked);
+    });
   };
 
   return (
@@ -34,7 +49,7 @@ const SinglePost = () => {
           <View style={styles.creatorPic}>
             <Image style={styles.profilePic} source={ProfilePic} />
           </View>
-          <Text style={styles.creatorName}>Mohit Kumar</Text>
+          <Text style={styles.creatorName}>{postDetail?.author?.name}</Text>
         </View>
         <View style={styles.postMenu}>
           <Icon name="ellipsis-v" size={20} color={'black'} />
@@ -43,7 +58,14 @@ const SinglePost = () => {
 
       {/* creation */}
       <View style={styles.creation}>
-        <Image source={Test2Creation} style={styles.creationPic} />
+        <Image
+          source={
+            postDetail?.quoteUrl
+              ? {uri: `${postDetail?.quoteUrl}`}
+              : Test2Creation
+          }
+          style={styles.creationPic}
+        />
       </View>
 
       {/* Engagement */}
@@ -52,9 +74,9 @@ const SinglePost = () => {
           <View style={styles.likeComment}>
             <Pressable onPress={handleLike}>
               <Icon2
-                name={liked ? 'heart' : 'heart-o'}
+                name={postLiked ? 'heart' : 'heart-o'}
                 size={25}
-                color={liked ? '#FF0000' : 'black'}
+                color={postLiked ? '#FF0000' : 'black'}
                 style={{marginRight: 15}}
               />
             </Pressable>
@@ -73,7 +95,7 @@ const SinglePost = () => {
           </View>
         </View>
         <View style={styles.stats}>
-          <Text>7 Likes</Text>
+          <Text>{postDetail?.likes?.length} Likes</Text>
         </View>
       </View>
       <View style={styles.tags}>

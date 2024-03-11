@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   responsiveHeight,
@@ -8,11 +8,26 @@ import Colors from '../assets/colors/Colors';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {TextInput, GestureHandlerRootView} from 'react-native-gesture-handler';
 import Icon2 from 'react-native-vector-icons/Feather';
+import {useDispatch, useSelector} from 'react-redux';
+import {setUser} from '../redux/slices/general';
 
 const EditProfile = props => {
-  const handleChange = text => {
-    console.log(text);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.userApi.profile);
+  const [formData, setFormData] = useState({
+    name: user?.name,
+    email: user?.email,
+    link: user?.link,
+    bio: user?.bio,
+  });
+
+  const handleChange = (name, value) => {
+    setFormData({...formData, [name]: value});
   };
+
+  useEffect(() => {
+    dispatch(setUser(formData));
+  }, [formData]);
 
   return (
     <GestureHandlerRootView>
@@ -23,8 +38,9 @@ const EditProfile = props => {
           <View style={styles.singleInputContainer}>
             <Icon name="edit" color={Colors.PRIMARY} size={20} style={{}} />
             <TextInput
+              value={formData.name}
               style={styles.input}
-              onChangeText={handleChange}
+              onChangeText={txt => handleChange('name', txt)}
               placeholder="Name"
             />
           </View>
@@ -32,17 +48,19 @@ const EditProfile = props => {
           <View style={styles.singleInputContainer}>
             <Icon2 name="user" color={Colors.PRIMARY} size={20} style={{}} />
             <TextInput
+              value={formData.email}
               style={styles.input}
-              onChangeText={handleChange}
-              placeholder="Username"
+              onChangeText={txt => handleChange('email', txt)}
+              placeholder="Email"
             />
           </View>
 
           <View style={styles.singleInputContainer}>
             <Icon2 name="link" color={Colors.PRIMARY} size={20} style={{}} />
             <TextInput
+              value={formData.link}
               style={styles.input}
-              onChangeText={handleChange}
+              onChangeText={txt => handleChange('link', txt)}
               placeholder="Link"
             />
           </View>
@@ -55,8 +73,9 @@ const EditProfile = props => {
               style={{}}
             />
             <TextInput
+              value={formData.bio}
               style={styles.input}
-              onChangeText={handleChange}
+              onChangeText={txt => handleChange('bio', txt)}
               placeholder="Bio"
               numberOfLines={4}
               multiline={true}

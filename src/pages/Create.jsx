@@ -10,16 +10,20 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import ViewShot from 'react-native-view-shot';
+import {useDispatch} from 'react-redux';
+import {createPost} from '../redux/slices/postSlice';
+import {getUserPosts} from '../redux/slices/userPostsSlice';
 
-const Create = props => {
+const Create = ({navigation}) => {
+  const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
   const [textOnImage, setTextOnImage] = useState('');
 
   const handleImagePicker = async () => {
     try {
       const image = await ImagePicker.openPicker({
-        width: 300,
-        height: 400,
+        width: 500,
+        height: 500,
         cropping: true,
       });
       setSelectedImage(image.path);
@@ -36,6 +40,7 @@ const Create = props => {
         const result = await viewShotRef.current.capture(); // Capture the view
         // You can save or upload the 'result' image here
         setSelectedImage(result);
+        console.log(result);
         setTextOnImage('kjk');
         Alert.alert('Saved', `Text: ${textOnImage}`);
       } catch (error) {
@@ -52,6 +57,29 @@ const Create = props => {
       setTextOnImage(null);
     };
   }, []);
+
+  const uploadImage = async () => {
+    try {
+      if (!selectedImage) {
+        console.error('No image selected');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', {
+        uri: selectedImage,
+        type: 'image/jpeg',
+        name: 'image.jpg',
+      });
+
+      dispatch(createPost(formData)).then(response => {
+        console.log('response', response.payload);
+        navigation.navigate('Profile');
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -77,6 +105,10 @@ const Create = props => {
           />
           <TouchableOpacity onPress={handleSaveImage}>
             <Text>Save Image with Text</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={uploadImage}>
+            <Text>Upload Image</Text>
           </TouchableOpacity>
         </View>
       )}

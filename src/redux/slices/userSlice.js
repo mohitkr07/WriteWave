@@ -32,13 +32,17 @@ export const loginUser = createAsyncThunk('user/loginUser', async userData => {
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    usersData: [],
+    usersData: {},
+    token: null,
     status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
     error: null,
   },
   reducers: {
     setToken: (state, action) => {
       state.token = action.payload;
+    },
+    setUserData: (state, action) => {
+      state.usersData = action.payload;
     },
   },
   extraReducers: builder => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ViewStackNavigator from './ViewStackNavigator';
 import Search from '../pages/Search';
@@ -13,7 +13,8 @@ import {
 } from 'react-native-responsive-dimensions';
 import {Text, View} from 'react-native';
 import Create from '../pages/Create';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux';
+import {getUserProfile} from '../redux/slices/userApiSlice';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,6 +51,12 @@ const CustomTabBarIcon = ({focused, source, label}) => {
 };
 
 const BottomTabNavigator = props => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserProfile());
+  }, [dispatch]);
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({

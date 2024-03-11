@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,8 +15,40 @@ import ProfilePic from '../assets/images/profile.jpg';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import SinglePost from '../components/reusable/SinglePost';
+import {useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
+import {getUserPosts} from '../redux/slices/userPostsSlice';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Profile = ({navigation}) => {
+  // bug: somewhere data of profile is being set differently
+  const dispatch = useDispatch();
+  const user = useSelector(state => state?.userApi?.profile);
+  const allPosts = useSelector(state => state?.userPosts?.posts);
+  const [posts, setPosts] = useState(allPosts || []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchPosts();
+    }, []),
+  );
+
+  const fetchPosts = async () => {
+    try {
+      const res = await dispatch(getUserPosts());
+      const msg = res.payload.message;
+      if (msg === 'Posts fetched') {
+        setPosts(res.payload.posts);
+      } else {
+        console.log('error fetching posts');
+      }
+    } catch (error) {
+      console.error('An error occurred while fetching posts:', error);
+    }
+  };
+
+  console.log('user', user);
+
   const handleEditPress = () => {
     console.log('test');
     navigation.navigate('EditProfile');
@@ -37,20 +69,23 @@ const Profile = ({navigation}) => {
 
         <View style={styles.profileDetail}>
           <View style={styles.nameContainer}>
-            <Text style={styles.txtStyle.name}>Mohit Kumar</Text>
+            <Text style={styles.txtStyle.name}>{user?.name}</Text>
           </View>
 
           <View style={styles.bio}>
             <Text style={styles.txtStyle.bio}>
-              Zaruri nahi sirf usi se nafrat ho, jisse mohabbat ho...
+              {user?.bio ? user?.bio : 'Bio'}
             </Text>
           </View>
 
-          <View style={styles.networkContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Follow')}
+            style={styles.networkContainer}>
             <Text style={styles.txtStyle.network}>
-              25 Followers | 32 Following
+              {user?.followers?.length} Followers | {user?.following?.length}{' '}
+              Following
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity onPress={handleEditPress} style={styles.editProfile}>
@@ -69,7 +104,7 @@ const Profile = ({navigation}) => {
       <View style={styles.postOptions}>
         <TouchableOpacity style={styles.posts}>
           <Text style={{color: '#190482', fontSize: responsiveFontSize(2.08)}}>
-            Posts (8)
+            Posts ({posts.length})
           </Text>
         </TouchableOpacity>
         <View style={styles.viewOptions}>
@@ -77,10 +112,25 @@ const Profile = ({navigation}) => {
         </View>
       </View>
 
+      {posts.length > 0 &&
+        posts.map((post, index) => {
+          return (
+            <SinglePost
+              key={index}
+              post={post}
+              // id={post._id}
+              // imgUri={post.quoteUrl}
+              // author={post.author}
+              // likes={post.likes}
+              // liked={post.liked}
+            />
+          );
+        })}
+
+      {/* <SinglePost />
       <SinglePost />
       <SinglePost />
-      <SinglePost />
-      <SinglePost />
+      <SinglePost /> */}
     </ScrollView>
   );
 };
