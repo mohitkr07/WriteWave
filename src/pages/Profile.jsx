@@ -47,10 +47,7 @@ const Profile = ({navigation}) => {
     }
   };
 
-  console.log('user', user);
-
   const handleEditPress = () => {
-    console.log('test');
     navigation.navigate('EditProfile');
   };
 

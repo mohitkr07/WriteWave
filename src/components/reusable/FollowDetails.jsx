@@ -19,12 +19,11 @@ import {useSelector} from 'react-redux';
 
 const FollowDetails = ({navigation}) => {
   const user = useSelector(state => state?.userApi?.profile);
+  const userId = useSelector(state => state?.userApi?.profile._id);
   const [selectTab, setSelectTab] = useState('followers');
   const handleSelectTab = res => {
     setSelectTab(res);
   };
-
-  console.log(user);
 
   return (
     <GestureHandlerRootView>
@@ -62,12 +61,12 @@ const FollowDetails = ({navigation}) => {
         {selectTab === 'followers' ? (
           <FlatList
             data={user?.followers}
-            renderItem={item => renderComponent(navigation, item)}
+            renderItem={item => renderComponent(navigation, item, userId)}
           />
         ) : (
           <FlatList
             data={user?.following}
-            renderItem={item => renderFollowing(navigation, item)}
+            renderItem={item => renderFollowing(navigation, item, userId)}
           />
         )}
       </View>
@@ -75,10 +74,19 @@ const FollowDetails = ({navigation}) => {
   );
 };
 
-const renderComponent = (navigation, {item}) => {
+const renderComponent = (navigation, {item}, userId) => {
+  // const handleNavigate = () => {
+  //   const data = {id: item?._id};
+  //   navigation.navigate('People', {data});
+  // };
+
   const handleNavigate = () => {
     const data = {id: item?._id};
-    navigation.navigate('People', {data});
+    if (item?._id === userId) {
+      navigation.navigate('Profile');
+    } else {
+      navigation.navigate('People', {data});
+    }
   };
   return (
     <View style={styles.container1}>

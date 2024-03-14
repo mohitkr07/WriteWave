@@ -79,11 +79,12 @@ const PeopleFollowDetails = ({route, navigation}) => {
 
 const renderComponent = (navigation, {item}, userId) => {
   const handleNavigate = () => {
+    console.log('id', userId);
     const data = {id: item?._id};
     if (item?._id === userId) {
       navigation.navigate('Profile');
     } else {
-      navigation.navigate('People', data);
+      navigation.navigate('People', {data});
     }
   };
 
@@ -99,11 +100,15 @@ const renderComponent = (navigation, {item}, userId) => {
   );
 };
 
-const renderFollowing = (navigation, {item}) => {
+const renderFollowing = (navigation, {item}, userId) => {
   const handleNavigate = () => {
+    console.log('id', userId);
     const data = {id: item?._id};
-    // if(data._id===)
-    navigation.navigate('People', data);
+    if (item?._id === userId) {
+      navigation.navigate('Profile');
+    } else {
+      navigation.navigate('People', {data});
+    }
   };
 
   return (

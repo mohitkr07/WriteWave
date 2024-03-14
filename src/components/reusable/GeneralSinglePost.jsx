@@ -16,7 +16,7 @@ import Icon4 from 'react-native-vector-icons/Fontisto';
 import {hitLike} from '../../redux/slices/general';
 import {useDispatch} from 'react-redux';
 
-const SinglePost = ({post}) => {
+const GeneralSinglePost = ({post}) => {
   const dispatch = useDispatch();
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
 
@@ -171,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SinglePost;
+export default GeneralSinglePost;

@@ -4,6 +4,8 @@ import userApiReducer from '../slices/userApiSlice';
 import generalReducer from '../slices/general';
 import postReducer from '../slices/postSlice';
 import userPostsReducer from '../slices/userPostsSlice';
+import searchReducer from '../slices/searchSlice';
+import feedReducer from '../slices/feedSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -11,6 +13,8 @@ const rootReducer = combineReducers({
   general: generalReducer,
   post: postReducer,
   userPosts: userPostsReducer,
+  search: searchReducer,
+  feed: feedReducer,
 });
 
 const store = configureStore({

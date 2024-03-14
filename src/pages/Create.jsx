@@ -40,7 +40,6 @@ const Create = ({navigation}) => {
         const result = await viewShotRef.current.capture(); // Capture the view
         // You can save or upload the 'result' image here
         setSelectedImage(result);
-        console.log(result);
         setTextOnImage('kjk');
         Alert.alert('Saved', `Text: ${textOnImage}`);
       } catch (error) {

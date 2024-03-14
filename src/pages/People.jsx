@@ -31,9 +31,11 @@ const People = ({navigation, route}) => {
   const userId = route?.params?.data?.id;
   const selfId = useSelector(state => state.userApi.profile._id);
 
+  console.log('actual id', userId);
+
   useEffect(() => {
     fetchPeopleProfile();
-  }, []);
+  }, [userId]);
 
   const fetchPeopleProfile = () => {
     dispatch(getPeople(userId)).then(response => {

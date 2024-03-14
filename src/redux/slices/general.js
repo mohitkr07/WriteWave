@@ -129,7 +129,6 @@ const editUserSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.formData = action.payload;
-      console.log('state', action.payload);
     },
   },
 });

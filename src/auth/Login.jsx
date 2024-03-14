@@ -37,7 +37,6 @@ const Login = ({navigation}) => {
       const data = await res.json();
       await AsyncStorage.setItem('token', data.token);
       navigation.replace('BottomTabs');
-      console.log(data.token);
     } catch (error) {
       console.error('Error during login:', error.message);
     }
@@ -45,7 +44,6 @@ const Login = ({navigation}) => {
 
   const handleChange = (key, value) => {
     setFormData({...formData, [key]: value});
-    console.log(formData);
   };
 
   return (

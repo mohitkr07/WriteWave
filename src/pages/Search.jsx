@@ -14,14 +14,24 @@ import {
 } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Colors from '../assets/colors/Colors';
+import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+import {searchUsers} from '../redux/slices/searchSlice';
+import {
+  clearSearchResults,
+  clearUserHits,
+  setUserHits,
+} from '../redux/slices/searchSlice';
 
 const Search = ({navigation}) => {
+  const dispatch = useDispatch();
   const inputRef = useRef(null);
   const [selectTab, setSelectTab] = useState('people');
+  const results = useSelector(state => state?.search?.searchResults);
 
-  const handleChangeQuery = text => {
-    console.log(text);
-  };
+  const handleChangeQuery = debounce(text => {
+    handleSearch(text);
+  }, 500); // Debounce time set to .5 second
 
   const handleSearchPress = () => {
     inputRef.current.focus();
@@ -32,18 +42,20 @@ const Search = ({navigation}) => {
   };
 
   useEffect(() => {
-    // console.log('Component did mount');
-
     const onFocusListener = navigation.addListener('focus', () => {
-      // console.log('Component is focused');
       handleSearchPress();
     });
 
     return () => {
       onFocusListener();
-      // console.log('Component will unmount');
     };
   }, []);
+
+  const handleSearch = query => {
+    dispatch(searchUsers(query)).then(response => {
+      // console.log(response.payload);
+    });
+  };
 
   return (
     <GestureHandlerRootView>
@@ -94,19 +106,45 @@ const Search = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <FlatList data={[1, 2]} renderItem={() => renderComponent()} />
+        {results.length === 0 && (
+          <View
+            style={{
+              alignItems: 'center',
+              paddingVertical: 10,
+            }}>
+            <Text>No Such User</Text>
+          </View>
+        )}
+        {selectTab === 'people' ? (
+          <FlatList
+            data={results}
+            renderItem={item => renderComponent(navigation, item)}
+          />
+        ) : null}
       </View>
     </GestureHandlerRootView>
   );
 };
 
-const renderComponent = () => {
+const renderComponent = (navigation, {item}) => {
+  const handleNavigate = () => {
+    const data = {id: item?._id};
+    navigation.navigate('People', {data});
+  };
   return (
-    <TouchableOpacity style={styles.result}>
+    <TouchableOpacity onPress={handleNavigate} style={styles.result}>
       <View style={styles.icon}></View>
-      <Text style={styles.resultTxt}>xyz</Text>
+      <Text style={styles.resultTxt}>{item.name}</Text>
     </TouchableOpacity>
   );
+};
+
+const debounce = (func, delay) => {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
 };
 
 const styles = StyleSheet.create({

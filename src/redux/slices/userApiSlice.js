@@ -20,7 +20,6 @@ export const getUserProfile = createAsyncThunk(
         },
       });
       const data = await response.json();
-      console.log(data);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue({error: error.message});
