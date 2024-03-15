@@ -48,6 +48,60 @@ export const updateUserProfile = createAsyncThunk(
   },
 );
 
+export const updateProfilePic = createAsyncThunk(
+  'user/updateProfilePic',
+  async (formData, thunkAPI) => {
+    const token = await getToken();
+    try {
+      const response = await fetch(`${BASE_URL}api/user/profilepic`, {
+        method: 'PATCH',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to upload image: ${errorMessage}`);
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({error: error.message});
+    }
+  },
+);
+
+export const updateCoverPic = createAsyncThunk(
+  'user/updateProfilePic',
+  async (formData, thunkAPI) => {
+    const token = await getToken();
+    try {
+      const response = await fetch(`${BASE_URL}api/user/coverpic`, {
+        method: 'PATCH',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to upload image: ${errorMessage}`);
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({error: error.message});
+    }
+  },
+);
+
 const userApiSlice = createSlice({
   name: 'userApi',
   initialState: {

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Image,
 } from 'react-native';
 import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
@@ -26,6 +27,7 @@ import {
 const Search = ({navigation}) => {
   const dispatch = useDispatch();
   const inputRef = useRef(null);
+  const userId = useSelector(state => state?.userApi?.profile?._id);
   const [selectTab, setSelectTab] = useState('people');
   const results = useSelector(state => state?.search?.searchResults);
 
@@ -118,7 +120,7 @@ const Search = ({navigation}) => {
         {selectTab === 'people' ? (
           <FlatList
             data={results}
-            renderItem={item => renderComponent(navigation, item)}
+            renderItem={item => renderComponent(navigation, item, userId)}
           />
         ) : null}
       </View>
@@ -126,14 +128,28 @@ const Search = ({navigation}) => {
   );
 };
 
-const renderComponent = (navigation, {item}) => {
+const renderComponent = (navigation, {item}, userId) => {
   const handleNavigate = () => {
     const data = {id: item?._id};
-    navigation.navigate('People', {data});
+    // navigation.navigate('People', {data});
+    if (item?._id === userId) {
+      navigation.navigate('Profile');
+    } else {
+      navigation.navigate('People', {data});
+    }
   };
+
+  console.log(item);
   return (
     <TouchableOpacity onPress={handleNavigate} style={styles.result}>
-      <View style={styles.icon}></View>
+      <View style={styles.icon}>
+        {item?.profilePicture && (
+          <Image
+            source={item?.profilePicture ? {uri: item?.profilePicture} : null}
+            style={{height: '100%', width: '100%', borderRadius: 50}}
+          />
+        )}
+      </View>
       <Text style={styles.resultTxt}>{item.name}</Text>
     </TouchableOpacity>
   );

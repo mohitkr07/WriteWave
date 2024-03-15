@@ -32,7 +32,7 @@ const EditProfile = props => {
   return (
     <GestureHandlerRootView>
       <ScrollView>
-        <View style={styles.container}></View>
+        {/* <View style={styles.container}></View> */}
 
         <View style={{paddingHorizontal: responsiveWidth(5)}}>
           <View style={styles.singleInputContainer}>
@@ -89,7 +89,7 @@ const EditProfile = props => {
 
 const styles = StyleSheet.create({
   container: {
-    height: responsiveHeight(20),
+    height: responsiveWidth(30),
     backgroundColor: Colors.PRIMARY,
   },
   input: {

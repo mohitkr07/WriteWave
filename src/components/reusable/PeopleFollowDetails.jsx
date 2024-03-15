@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -15,18 +15,47 @@ import {
 } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Colors from '../../assets/colors/Colors';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {followAction} from '../../redux/slices/general';
+import {getUserProfile} from '../../redux/slices/userApiSlice';
 
 const PeopleFollowDetails = ({route, navigation}) => {
+  const dispatch = useDispatch();
+  const user = useSelector(state => state?.userApi?.profile);
   const userId = useSelector(state => state?.userApi?.profile._id);
   const followers = route?.params?.data?.followers;
   const following = route?.params?.data?.following;
   const [selectTab, setSelectTab] = useState('followers');
+
+  const [followings, setFollowings] = useState([]);
+
   const handleSelectTab = res => {
     setSelectTab(res);
   };
 
-  console.log('followers', userId);
+  useEffect(() => {
+    setFollowings(
+      following?.map(item => {
+        const isFollowed = user?.following?.some(obj => obj._id === item._id);
+        if (isFollowed) {
+          return {
+            ...item,
+            followed: true,
+          };
+        }
+        return {
+          ...item,
+          followed: false,
+        };
+      }),
+    );
+  }, [user]);
+
+  const handleFollowed = id => {
+    dispatch(getUserProfile()).then(res => {
+      console.log('res', res.payload);
+    });
+  };
 
   return (
     <GestureHandlerRootView>
@@ -68,8 +97,17 @@ const PeopleFollowDetails = ({route, navigation}) => {
           />
         ) : (
           <FlatList
-            data={following}
-            renderItem={item => renderFollowing(navigation, item, userId)}
+            data={followings}
+            renderItem={item =>
+              renderFollowing(
+                navigation,
+                item,
+                userId,
+                user,
+                dispatch,
+                handleFollowed,
+              )
+            }
           />
         )}
       </View>
@@ -100,9 +138,15 @@ const renderComponent = (navigation, {item}, userId) => {
   );
 };
 
-const renderFollowing = (navigation, {item}, userId) => {
+const renderFollowing = (
+  navigation,
+  {item},
+  userId,
+  user,
+  dispatch,
+  handleFollowed,
+) => {
   const handleNavigate = () => {
-    console.log('id', userId);
     const data = {id: item?._id};
     if (item?._id === userId) {
       navigation.navigate('Profile');
@@ -111,23 +155,43 @@ const renderFollowing = (navigation, {item}, userId) => {
     }
   };
 
+  const handleFollow = () => {
+    dispatch(followAction(item?._id)).then(res => {
+      if (res.meta.requestStatus === 'fulfilled') {
+        handleFollowed(item?._id);
+      }
+      console.log(res.payload);
+    });
+  };
+
   return (
     <View style={styles.container1}>
       <TouchableOpacity onPress={handleNavigate} style={styles.result}>
-        <View style={styles.icon}></View>
+        <View style={styles.icon}>
+          {item?.profiePicture && (
+            <Image style={{}} source={{uri: item?.profiePicture}} />
+          )}
+        </View>
         <Text style={styles.resultTxt}>{item?.name}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.unfollow}>
-        <Text
+      {userId !== item._id && (
+        <TouchableOpacity
+          onPress={handleFollow}
           style={{
-            fontSize: responsiveFontSize(1.69),
-            fontWeight: '500',
-            color: Colors.TEXT,
+            ...styles.unfollow,
+            backgroundColor: item?.followed ? Colors.BG3 : Colors.LIGHT_PURPLE,
           }}>
-          Unfollow
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: responsiveFontSize(1.69),
+              fontWeight: '500',
+              color: item?.followed ? Colors.TEXT : Colors.WHITE,
+            }}>
+            {item?.followed ? 'Unfollow' : 'Follow'}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -142,9 +206,10 @@ const styles = StyleSheet.create({
   unfollow: {
     paddingHorizontal: 10,
     paddingVertical: 7,
-    backgroundColor: '#e6e8e6',
     color: Colors.PRIMARY,
     borderRadius: 5,
+    width: responsiveWidth(20),
+    alignItems: 'center',
   },
   result: {
     height: responsiveHeight(7.5),

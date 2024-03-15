@@ -13,6 +13,7 @@ import ViewShot from 'react-native-view-shot';
 import {useDispatch} from 'react-redux';
 import {createPost} from '../redux/slices/postSlice';
 import {getUserPosts} from '../redux/slices/userPostsSlice';
+import {responsiveWidth} from 'react-native-responsive-dimensions';
 
 const Create = ({navigation}) => {
   const dispatch = useDispatch();
@@ -122,8 +123,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 300,
-    height: 400,
+    width: responsiveWidth(90),
+    height: responsiveWidth(90),
     marginTop: 20,
   },
   textInput: {

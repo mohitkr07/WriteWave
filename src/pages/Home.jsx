@@ -9,7 +9,7 @@ import {getFeedPosts} from '../redux/slices/feedSlice';
 import {useSelector} from 'react-redux';
 import GeneralSinglePost from '../components/reusable/GeneralSinglePost';
 
-const Home = props => {
+const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const feed = useSelector(state => state.feed.posts);
   useEffect(() => {
@@ -22,7 +22,9 @@ const Home = props => {
     <FlatList
       showsVerticalScrollIndicator={false}
       data={feed}
-      renderItem={post => <GeneralSinglePost post={post.item} />}
+      renderItem={post => (
+        <GeneralSinglePost post={post.item} navigation={navigation} />
+      )}
     />
   );
 };

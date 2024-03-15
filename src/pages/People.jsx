@@ -28,6 +28,7 @@ const People = ({navigation, route}) => {
   const [people, setPeople] = useState(null);
   const [posts, setPosts] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowsYou, setisFollowsYou] = useState(false);
   const userId = route?.params?.data?.id;
   const selfId = useSelector(state => state.userApi.profile._id);
 
@@ -53,6 +54,8 @@ const People = ({navigation, route}) => {
 
   useEffect(() => {
     const exists = people?.followers?.some(obj => obj._id === selfId);
+    const isfollow = people?.following?.some(obj => obj._id === selfId);
+    setisFollowsYou(isfollow);
     setIsFollowing(exists);
   }, [people]);
 
@@ -80,11 +83,25 @@ const People = ({navigation, route}) => {
       <ScrollView style={styles.container}>
         <View style={styles.top}>
           <View style={styles.profileImg}>
-            <View style={styles.cover}></View>
+            <View style={styles.cover}>
+              <Image
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  flex: 1,
+                  resizeMode: 'stretch',
+                }}
+                source={people?.coverPic ? {uri: people?.coverPic} : ProfilePic}
+              />
+            </View>
             <View style={styles.proficPicContainer}>
               <Image
                 style={{flex: 1, aspectRatio: 1, resizeMode: 'contain'}}
-                source={ProfilePic}
+                source={
+                  people?.profilePicture
+                    ? {uri: people?.profilePicture}
+                    : ProfilePic
+                }
               />
             </View>
             <TouchableOpacity
@@ -108,6 +125,19 @@ const People = ({navigation, route}) => {
           <View style={styles.profileDetail}>
             <View style={styles.nameContainer}>
               <Text style={styles.txtStyle.name}>{people?.name}</Text>
+              {isFollowsYou && (
+                <View
+                  style={{
+                    backgroundColor: '#e8e8e8',
+                    alignSelf: 'flex-start',
+                    paddingHorizontal: 5,
+                    borderRadius: 3,
+                    paddingVertical: 2,
+                    marginVertical: 2,
+                  }}>
+                  <Text style={{fontSize: 12}}>Follows you</Text>
+                </View>
+              )}
             </View>
 
             <View style={styles.bio}>
@@ -168,6 +198,9 @@ const People = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
+  nameContainer: {
+    flexDirection: 'column',
+  },
   followAction: {
     position: 'absolute',
     bottom: 0,
@@ -202,7 +235,7 @@ const styles = StyleSheet.create({
   cover: {
     height: responsiveWidth(30),
     width: '100%',
-    backgroundColor: '#190482',
+    backgroundColor: Colors.WHITE,
     position: 'absolute',
   },
   proficPicContainer: {
@@ -212,7 +245,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 50,
     overflow: 'hidden',
-    backgroundColor: 'blue',
+    backgroundColor: Colors.WHITE,
     position: 'absolute',
     bottom: 0,
     left: responsiveWidth(5),

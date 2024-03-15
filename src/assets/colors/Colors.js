@@ -7,4 +7,5 @@ export default Colors = {
   WHITE: '#fff',
   BG_THEME: '#F3F8FF',
   BG2: '#d4d5d6',
+  BG3: '#e6e8e6',
 };

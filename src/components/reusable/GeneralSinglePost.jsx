@@ -15,17 +15,19 @@ import Icon3 from 'react-native-vector-icons/Feather';
 import Icon4 from 'react-native-vector-icons/Fontisto';
 import {hitLike} from '../../redux/slices/general';
 import {useDispatch} from 'react-redux';
+import {
+  GestureHandlerRootView,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
+import Colors from '../../assets/colors/Colors';
+import {useSelector} from 'react-redux';
 
-const GeneralSinglePost = ({post}) => {
+const GeneralSinglePost = ({post, navigation}) => {
   const dispatch = useDispatch();
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
-
+  const userId = useSelector(state => state?.userApi?.profile?._id);
   const [postDetail, setPostDetail] = useState(post);
   const [postLiked, setLiked] = useState(postDetail?.liked);
-
-  // useEffect(() => {
-  //   setPostDetail();
-  // }, [postDetail]);
 
   const handleCommentPress = () => {
     setCommentModalVisible(true);
@@ -38,71 +40,88 @@ const GeneralSinglePost = ({post}) => {
     });
   };
 
+  const handleNavigate = () => {
+    const id = postDetail?.author?._id;
+    const data = {id};
+    if (id === userId) {
+      navigation.navigate('Profile');
+    } else {
+      navigation.navigate('People', {data});
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      {/* top */}
-      <View style={styles.top}>
-        <View style={styles.creator}>
-          <View style={styles.creatorPic}>
-            <Image style={styles.profilePic} source={ProfilePic} />
+    <GestureHandlerRootView>
+      <View style={styles.container}>
+        {/* top */}
+        <View style={styles.top}>
+          <View style={styles.creator}>
+            <TouchableOpacity
+              onPress={handleNavigate}
+              activeOpacity={0.7}
+              style={styles.creatorPic}>
+              <Image style={styles.profilePic} source={ProfilePic} />
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.7} onPress={handleNavigate}>
+              <Text style={styles.creatorName}>{postDetail?.author?.name}</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.creatorName}>{postDetail?.author?.name}</Text>
+          <View style={styles.postMenu}>
+            <Icon name="ellipsis-v" size={20} color={'black'} />
+          </View>
         </View>
-        <View style={styles.postMenu}>
-          <Icon name="ellipsis-v" size={20} color={'black'} />
+
+        {/* creation */}
+        <View style={styles.creation}>
+          <Image
+            source={
+              postDetail?.quoteUrl
+                ? {uri: `${postDetail?.quoteUrl}`}
+                : Test2Creation
+            }
+            style={styles.creationPic}
+          />
         </View>
-      </View>
 
-      {/* creation */}
-      <View style={styles.creation}>
-        <Image
-          source={
-            postDetail?.quoteUrl
-              ? {uri: `${postDetail?.quoteUrl}`}
-              : Test2Creation
-          }
-          style={styles.creationPic}
-        />
-      </View>
-
-      {/* Engagement */}
-      <View style={styles.engagement}>
-        <View style={styles.postActions}>
-          <View style={styles.likeComment}>
-            <Pressable onPress={handleLike}>
+        {/* Engagement */}
+        <View style={styles.engagement}>
+          <View style={styles.postActions}>
+            <View style={styles.likeComment}>
+              <Pressable onPress={handleLike}>
+                <Icon2
+                  name={postLiked ? 'heart' : 'heart-o'}
+                  size={25}
+                  color={postLiked ? '#FF0000' : 'black'}
+                  style={{marginRight: 15}}
+                />
+              </Pressable>
+              <Pressable onPress={handleCommentPress}>
+                <Icon4 name="comment" size={23} color={'black'} />
+              </Pressable>
+            </View>
+            <View style={styles.share}>
               <Icon2
-                name={postLiked ? 'heart' : 'heart-o'}
-                size={25}
-                color={postLiked ? '#FF0000' : 'black'}
                 style={{marginRight: 15}}
+                name="bookmark-o"
+                size={23}
+                color={'black'}
               />
-            </Pressable>
-            <Pressable onPress={handleCommentPress}>
-              <Icon4 name="comment" size={23} color={'black'} />
-            </Pressable>
+              <Icon3 name="share-2" size={23} color={'black'} />
+            </View>
           </View>
-          <View style={styles.share}>
-            <Icon2
-              style={{marginRight: 15}}
-              name="bookmark-o"
-              size={23}
-              color={'black'}
-            />
-            <Icon3 name="share-2" size={23} color={'black'} />
+          <View style={styles.stats}>
+            <Text>{postDetail?.likes?.length} Likes</Text>
           </View>
         </View>
-        <View style={styles.stats}>
-          <Text>{postDetail?.likes?.length} Likes</Text>
+        <View style={styles.tags}>
+          <Text style={{color: '#7E30E1'}}>
+            #alone #meaningful #relatable #alone_soul #life{' '}
+          </Text>
         </View>
-      </View>
-      <View style={styles.tags}>
-        <Text style={{color: '#7E30E1'}}>
-          #alone #meaningful #relatable #alone_soul #life{' '}
-        </Text>
-      </View>
 
-      {/* Render the CommentModal component */}
-    </View>
+        {/* Render the CommentModal component */}
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -130,7 +149,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: 45,
     borderRadius: 50,
-    backgroundColor: 'blue',
+    backgroundColor: Colors.WHITE,
     marginRight: responsiveWidth(2.5),
     overflow: 'hidden',
   },
