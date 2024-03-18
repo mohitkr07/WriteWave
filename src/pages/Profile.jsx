@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Pressable,
+  Button,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -26,6 +28,8 @@ import {getUserProfile} from '../redux/slices/userApiSlice';
 import {updateCoverPic} from '../redux/slices/userApiSlice';
 import {updateProfilePic} from '../redux/slices/userApiSlice';
 import Colors from '../assets/colors/Colors';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import CommentBottomSheet from '../components/general/CommentBottomSheet';
 
 const Profile = ({navigation}) => {
   // bug: somewhere data of profile is being set differently
@@ -135,133 +139,124 @@ const Profile = ({navigation}) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.top}>
-        <View style={styles.profileImg}>
-          <View style={styles.cover}>
-            <Image
-              style={{
-                width: '100%',
-                height: '100%',
-                flex: 1,
-                resizeMode: 'stretch',
-              }}
-              source={user?.coverPic ? {uri: user?.coverPic} : ProfilePic}
-            />
+    <GestureHandlerRootView style={{flex: 1}}>
+      <ScrollView style={styles.container}>
+        <View style={styles.top}>
+          <View style={styles.profileImg}>
+            <View style={styles.cover}>
+              <Image
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  flex: 1,
+                  resizeMode: 'stretch',
+                }}
+                source={user?.coverPic ? {uri: user?.coverPic} : ProfilePic}
+              />
 
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={handleEditCover}
+                style={{
+                  position: 'absolute',
+                  right: responsiveWidth(4),
+                  bottom: responsiveWidth(2),
+                }}>
+                <Icon3 size={30} color={Colors.WHITE} name="image" />
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: -2,
+                    left: -2,
+                    backgroundColor: Colors.WHITE,
+                    borderRadius: 50,
+                  }}>
+                  <Icon3 name="add-circle" color={Colors.TEXT} size={15} />
+                </View>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={handleEditCover}
-              style={{
-                position: 'absolute',
-                right: responsiveWidth(4),
-                bottom: responsiveWidth(2),
-              }}>
-              <Icon3 size={30} color={Colors.WHITE} name="image" />
+              activeOpacity={0.8}
+              style={styles.profileImageContainer}
+              onPress={handleEdicProfilePic}>
+              <View style={styles.proficPicContainer}>
+                <Image
+                  style={{flex: 1, aspectRatio: 1, resizeMode: 'contain'}}
+                  source={
+                    user?.profilePicture
+                      ? {uri: user?.profilePicture}
+                      : ProfilePic
+                  }
+                />
+              </View>
               <View
                 style={{
                   position: 'absolute',
-                  top: -2,
-                  left: -2,
+                  bottom: 0,
+                  right: 7,
                   backgroundColor: Colors.WHITE,
                   borderRadius: 50,
                 }}>
-                <Icon3 name="add-circle" color={Colors.TEXT} size={15} />
+                <Icon3 name="add-circle" color={Colors.TEXT} size={19} />
               </View>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.profileImageContainer}
-            onPress={handleEdicProfilePic}>
-            <View style={styles.proficPicContainer}>
-              <Image
-                style={{flex: 1, aspectRatio: 1, resizeMode: 'contain'}}
-                source={
-                  user?.profilePicture
-                    ? {uri: user?.profilePicture}
-                    : ProfilePic
-                }
-              />
-            </View>
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 7,
-                backgroundColor: Colors.WHITE,
-                borderRadius: 50,
-              }}>
-              <Icon3 name="add-circle" color={Colors.TEXT} size={19} />
-            </View>
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.profileDetail}>
-          <View style={styles.nameContainer}>
-            <Text style={styles.txtStyle.name}>{user?.name}</Text>
-          </View>
+          <View style={styles.profileDetail}>
+            <View style={styles.nameContainer}>
+              <Text style={styles.txtStyle.name}>{user?.name}</Text>
+            </View>
 
-          <View style={styles.bio}>
-            <Text style={styles.txtStyle.bio}>
-              {user?.bio ? user?.bio : 'Bio'}
-            </Text>
+            <View style={styles.bio}>
+              <Text style={styles.txtStyle.bio}>
+                {user?.bio ? user?.bio : 'Bio'}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Follow')}
+              style={styles.networkContainer}>
+              <Text style={styles.txtStyle.network}>
+                {user?.followers?.length} Followers | {user?.following?.length}{' '}
+                Following
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('Follow')}
-            style={styles.networkContainer}>
-            <Text style={styles.txtStyle.network}>
-              {user?.followers?.length} Followers | {user?.following?.length}{' '}
-              Following
+            onPress={handleEditPress}
+            style={styles.editProfile}>
+            <Icon name="edit" size={16} color={'#7752FE'} />
+            <Text style={styles.editTxt}>EDIT PROFILE</Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              marginTop: 10,
+              borderBottomWidth: 0.5,
+              borderBottomColor: '#C2D9FF',
+            }}
+          />
+        </View>
+
+        <View style={styles.postOptions}>
+          <TouchableOpacity style={styles.posts}>
+            <Text
+              style={{color: '#190482', fontSize: responsiveFontSize(2.08)}}>
+              Posts ({posts.length})
             </Text>
           </TouchableOpacity>
+          <View style={styles.viewOptions}>
+            <Icon2 name="sort" size={responsiveWidth(7)} color={'black'} />
+          </View>
         </View>
 
-        <TouchableOpacity onPress={handleEditPress} style={styles.editProfile}>
-          <Icon name="edit" size={16} color={'#7752FE'} />
-          <Text style={styles.editTxt}>EDIT PROFILE</Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            marginTop: 10,
-            borderBottomWidth: 0.5,
-            borderBottomColor: '#C2D9FF',
-          }}
-        />
-      </View>
-
-      <View style={styles.postOptions}>
-        <TouchableOpacity style={styles.posts}>
-          <Text style={{color: '#190482', fontSize: responsiveFontSize(2.08)}}>
-            Posts ({posts.length})
-          </Text>
-        </TouchableOpacity>
-        <View style={styles.viewOptions}>
-          <Icon2 name="sort" size={responsiveWidth(7)} color={'black'} />
-        </View>
-      </View>
-
-      {posts.length > 0 &&
-        posts.map((post, index) => {
-          return (
-            <SinglePost
-              key={index}
-              post={post}
-              // id={post._id}
-              // imgUri={post.quoteUrl}
-              // author={post.author}
-              // likes={post.likes}
-              // liked={post.liked}
-            />
-          );
-        })}
-
-      {/* <SinglePost />
-      <SinglePost />
-      <SinglePost />
-      <SinglePost /> */}
-    </ScrollView>
+        {posts.length > 0 &&
+          posts.map((post, index) => {
+            return <SinglePost key={index} post={post} />;
+          })}
+      </ScrollView>
+      {/* <CommentBottomSheet /> */}
+    </GestureHandlerRootView>
   );
 };
 

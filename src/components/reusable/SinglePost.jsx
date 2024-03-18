@@ -13,8 +13,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Icon4 from 'react-native-vector-icons/Fontisto';
+import CommentBottomSheet from '../general/CommentBottomSheet';
 import {hitLike} from '../../redux/slices/general';
 import {useDispatch} from 'react-redux';
+import {fetchComments, toggleComment} from '../../redux/slices/commentSlice';
 
 const SinglePost = ({post}) => {
   const dispatch = useDispatch();
@@ -23,12 +25,11 @@ const SinglePost = ({post}) => {
   const [postDetail, setPostDetail] = useState(post);
   const [postLiked, setLiked] = useState(postDetail?.liked);
 
-  // useEffect(() => {
-  //   setPostDetail();
-  // }, [postDetail]);
-
   const handleCommentPress = () => {
-    setCommentModalVisible(true);
+    dispatch(toggleComment(true));
+    dispatch(fetchComments(postDetail?._id)).then(res => {
+      console.log(res.payload.comments);
+    });
   };
 
   const handleLike = () => {
@@ -44,7 +45,10 @@ const SinglePost = ({post}) => {
       <View style={styles.top}>
         <View style={styles.creator}>
           <View style={styles.creatorPic}>
-            <Image style={styles.profilePic} source={ProfilePic} />
+            <Image
+              style={styles.profilePic}
+              source={{uri: postDetail?.author?.profilePicture}}
+            />
           </View>
           <Text style={styles.creatorName}>{postDetail?.author?.name}</Text>
         </View>
@@ -100,8 +104,6 @@ const SinglePost = ({post}) => {
           #alone #meaningful #relatable #alone_soul #life{' '}
         </Text>
       </View>
-
-      {/* Render the CommentModal component */}
     </View>
   );
 };

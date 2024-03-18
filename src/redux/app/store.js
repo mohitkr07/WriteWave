@@ -6,6 +6,7 @@ import postReducer from '../slices/postSlice';
 import userPostsReducer from '../slices/userPostsSlice';
 import searchReducer from '../slices/searchSlice';
 import feedReducer from '../slices/feedSlice';
+import commentReducer from '../slices/commentSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   userPosts: userPostsReducer,
   search: searchReducer,
   feed: feedReducer,
+  comment: commentReducer,
 });
 
 const store = configureStore({

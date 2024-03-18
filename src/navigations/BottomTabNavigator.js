@@ -15,6 +15,8 @@ import {Text, View} from 'react-native';
 import Create from '../pages/Create';
 import {useDispatch} from 'react-redux';
 import {getUserProfile} from '../redux/slices/userApiSlice';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import CommentBottomSheet from '../components/general/CommentBottomSheet';
 
 const Tab = createBottomTabNavigator();
 
@@ -58,80 +60,84 @@ const BottomTabNavigator = props => {
   }, [dispatch]);
 
   return (
-    <Tab.Navigator
-      screenOptions={({route}) => ({
-        headerShown: false,
-        tabBarStyle: {
-          paddingBottom: 8,
-          paddingTop: 5,
-          height: responsiveHeight(7),
-        },
-        tabBarActiveTintColor: '#190482',
-        tabBarHideOnKeyboard: true,
-        tabBarIcon: ({focused}) => {
-          let source;
-          switch (route.name) {
-            case 'HomeTab':
-              source = {
-                name: 'home',
-                name2: 'home-outline',
-              };
-              break;
-            case 'Search':
-              source = {
-                name: 'search',
-                name2: 'search',
-              };
-              break;
-            case 'Post':
-              source = {
-                name: 'pluscircleo',
-                name2: 'pluscircle',
-              };
-              break;
-            case 'Notification':
-              source = {
-                name: 'bell',
-                name2: 'bell-o',
-              };
-              break;
-            case 'Profile':
-              source = {
-                name: 'user',
-                name2: 'user-o',
-              };
-              break;
-            default:
-              source = {
-                name: 'home',
-                name2: 'home',
-              };
-          }
-          return (
-            <View style={{}}>
-              <CustomTabBarIcon
-                focused={focused}
-                source={source}
-                label={route.name}
-              />
-            </View>
-          );
-        },
-      })}>
-      <Tab.Screen
-        options={{title: 'Home'}}
-        name="HomeTab"
-        component={ViewStackNavigator}
-      />
-      <Tab.Screen name="Search" component={Search} />
-      <Tab.Screen
-        options={{tabBarLabel: 'Create'}}
-        name="Post"
-        component={Create}
-      />
-      <Tab.Screen name="Notification" component={Notification} />
-      <Tab.Screen name="Profile" component={Profile} />
-    </Tab.Navigator>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          headerShown: false,
+          tabBarStyle: {
+            paddingBottom: 8,
+            paddingTop: 5,
+            height: responsiveHeight(7),
+          },
+          tabBarActiveTintColor: '#190482',
+          tabBarHideOnKeyboard: true,
+          tabBarIcon: ({focused}) => {
+            let source;
+            switch (route.name) {
+              case 'HomeTab':
+                source = {
+                  name: 'home',
+                  name2: 'home-outline',
+                };
+                break;
+              case 'Search':
+                source = {
+                  name: 'search',
+                  name2: 'search',
+                };
+                break;
+              case 'Post':
+                source = {
+                  name: 'pluscircleo',
+                  name2: 'pluscircle',
+                };
+                break;
+              case 'Notification':
+                source = {
+                  name: 'bell',
+                  name2: 'bell-o',
+                };
+                break;
+              case 'Profile':
+                source = {
+                  name: 'user',
+                  name2: 'user-o',
+                };
+                break;
+              default:
+                source = {
+                  name: 'home',
+                  name2: 'home',
+                };
+            }
+            return (
+              <View style={{}}>
+                <CustomTabBarIcon
+                  focused={focused}
+                  source={source}
+                  label={route.name}
+                />
+              </View>
+            );
+          },
+        })}>
+        <Tab.Screen
+          options={{title: 'Home'}}
+          name="HomeTab"
+          component={ViewStackNavigator}
+        />
+        <Tab.Screen name="Search" component={Search} />
+        <Tab.Screen
+          options={{tabBarLabel: 'Create'}}
+          name="Post"
+          component={Create}
+        />
+        <Tab.Screen name="Notification" component={Notification} />
+        <Tab.Screen name="Profile" component={Profile} />
+      </Tab.Navigator>
+
+      <CommentBottomSheet />
+    </GestureHandlerRootView>
   );
 };
 
