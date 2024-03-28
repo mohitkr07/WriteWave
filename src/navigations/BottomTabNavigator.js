@@ -7,11 +7,8 @@ import Profile from '../pages/Profile';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
-import {
-  responsiveFontSize,
-  responsiveHeight,
-} from 'react-native-responsive-dimensions';
-import {Text, View} from 'react-native';
+import {responsiveHeight} from 'react-native-responsive-dimensions';
+import {View} from 'react-native';
 import Create from '../pages/Create';
 import {useDispatch} from 'react-redux';
 import {getUserProfile} from '../redux/slices/userApiSlice';
@@ -52,7 +49,7 @@ const CustomTabBarIcon = ({focused, source, label}) => {
   );
 };
 
-const BottomTabNavigator = props => {
+const BottomTabNavigator = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {

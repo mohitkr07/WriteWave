@@ -1,7 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {BASE_URL} from '../../constants/api';
 
-// Async action for posting user data
 export const postUserData = createAsyncThunk(
   'user/postUserData',
   async userData => {
@@ -34,7 +33,7 @@ const userSlice = createSlice({
   initialState: {
     usersData: {},
     token: null,
-    status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
+    status: 'idle',
     error: null,
   },
   reducers: {

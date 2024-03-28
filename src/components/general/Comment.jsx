@@ -1,12 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Touchable,
-  Pressable,
-  Image,
-} from 'react-native';
+/* eslint-disable no-unused-vars */
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, Image} from 'react-native';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {
   responsiveFontSize,
@@ -25,16 +19,18 @@ import {
 } from '../../redux/slices/commentSlice';
 import {addReply} from '../../redux/slices/commentSlice';
 
+import PropTypes from 'prop-types';
+
 const Comment = ({item}) => {
   const dispatch = useDispatch();
   const replies = item?.replies;
   const [showReplies, setShowReplies] = useState(false);
-  const [populatedReplies, setPopulatedReplies] = useState([]);
+  const populatedReplies1 = useSelector(state => state?.comment?.replies)?.find(
+    reply => reply.commentId === item?._id,
+  )?.replies;
 
-  const [newComment, setNewComment] = useState('');
+  const commentId = item?._id;
   const [liked, setLiked] = useState(false);
-
-  console.log(item);
 
   useEffect(() => {
     const likedd = item?.likes?.some(like => {
@@ -43,23 +39,22 @@ const Comment = ({item}) => {
     setLiked(likedd);
   }, [item]);
 
+  useEffect(() => {
+    if (replies?.length > 0) {
+      dispatch(getReplies(item?._id));
+    }
+  }, [replies]);
+
   const handleShowReplies = () => {
     if (
-      populatedReplies.length > 0 &&
-      replies.length === populatedReplies.length
+      populatedReplies1?.length > 0 &&
+      replies?.length === populatedReplies1?.length
     )
       return setShowReplies(!showReplies);
 
     dispatch(getReplies(item?._id)).then(res => {
-      setPopulatedReplies(res?.payload?.comment?.replies);
       setShowReplies(!showReplies);
     });
-  };
-
-  const handleAddReply = () => {
-    dispatch(
-      addReply({postId: item?.post, commentId: item?._id, reply: newComment}),
-    );
   };
 
   const handleReplyClick = () => {
@@ -140,11 +135,11 @@ const Comment = ({item}) => {
           </View>
         </View>
 
-        {showReplies && (
+        {showReplies && populatedReplies1 && (
           <FlatList
             style={{marginVertical: 5}}
-            data={populatedReplies}
-            renderItem={({item}) => <Reply item={item} />}
+            data={populatedReplies1}
+            renderItem={({item}) => <Reply item={item} commentId={commentId} />}
           />
         )}
         {showReplies && (
@@ -174,6 +169,10 @@ const Comment = ({item}) => {
   );
 };
 
+Comment.propTypes = {
+  item: PropTypes.object.isRequired,
+};
+
 const styles = StyleSheet.create({
   container: {
     marginBottom: 15,
@@ -191,7 +190,6 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
-    // flexDirection: 'row',
   },
   infoLeft: {
     flexDirection: 'row',

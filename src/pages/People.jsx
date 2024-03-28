@@ -12,7 +12,6 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ProfilePic from '../assets/images/profile.jpg';
-import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import SinglePost from '../components/reusable/SinglePost';
 import {useSelector} from 'react-redux';

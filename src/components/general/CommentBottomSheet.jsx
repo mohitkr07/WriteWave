@@ -1,22 +1,15 @@
 import React, {useCallback, useRef, useMemo, useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  Pressable,
-  TextInput,
-} from 'react-native';
+import {StyleSheet, View, Text, TextInput, BackHandler} from 'react-native';
 import BottomSheet, {
   BottomSheetFlatList,
   TouchableOpacity,
 } from '@gorhom/bottom-sheet';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
 import {
   addReply,
   createComment,
   fetchComments,
+  setRepliesVacant,
   setReplyMode,
   toggleComment,
 } from '../../redux/slices/commentSlice';
@@ -52,27 +45,27 @@ const CommentBottomSheet = () => {
     index === -1 ? handleToggleComment(false) : null;
   }, []);
 
-  const handleSnapPress = useCallback(index => {
-    handleToggleComment(true);
-    sheetRef.current?.snapToIndex(index);
-  }, []);
+  // const handleSnapPress = useCallback(index => {
+  //   handleToggleComment(true);
+  //   sheetRef.current?.snapToIndex(index);
+  // }, []);
 
-  const handleClosePress = useCallback(() => {
-    sheetRef.current?.close();
-  }, []);
+  // const handleClosePress = useCallback(() => {
+  //   sheetRef.current?.close();
+  // }, []);
 
   const renderItem = useCallback(({item}) => <Comment item={item} />, []);
 
   const handleCreateComment = () => {
     if (replyMode) {
       dispatch(addReply({postId, comment, commentId: replyTo?.commentId})).then(
-        res => {
+        () => {
           setComment('');
           dispatch(fetchComments(postId));
         },
       );
     } else {
-      dispatch(createComment({postId, comment})).then(res => {
+      dispatch(createComment({postId, comment})).then(() => {
         setComment('');
         dispatch(fetchComments(postId));
       });
@@ -89,6 +82,26 @@ const CommentBottomSheet = () => {
     }
   }, [replyMode]);
 
+  const handleAfterClose = () => {
+    dispatch(setRepliesVacant());
+  };
+
+  // Handles back button press when modal is open
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (isModalVisible) {
+          handleToggleComment(false);
+          return true;
+        }
+        return false;
+      },
+    );
+
+    return () => backHandler.remove();
+  }, [isModalVisible]);
+
   return isModalVisible ? (
     <View style={styles.bottomSheet}>
       <View
@@ -97,16 +110,23 @@ const CommentBottomSheet = () => {
         }}>
         <BottomSheet
           enablePanDownToClose={true}
+          onClose={handleAfterClose}
           ref={sheetRef}
           snapPoints={snapPoints}
           onChange={handleSheetChange}>
-          <BottomSheetFlatList
-            style={{paddingHorizontal: responsiveWidth(5)}}
-            data={data}
-            keyExtractor={item => item._id}
-            renderItem={renderItem}
-            contentContainerStyle={styles.contentContainer}
-          />
+          {data.length > 0 ? (
+            <BottomSheetFlatList
+              style={{paddingHorizontal: responsiveWidth(5)}}
+              data={data}
+              keyExtractor={item => item._id}
+              renderItem={renderItem}
+              contentContainerStyle={styles.contentContainer}
+            />
+          ) : (
+            <Text style={{textAlign: 'center', marginTop: 10}}>
+              Type Something!
+            </Text>
+          )}
         </BottomSheet>
       </View>
       {replyMode && (

@@ -18,11 +18,6 @@ import Colors from '../assets/colors/Colors';
 import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 import {searchUsers} from '../redux/slices/searchSlice';
-import {
-  clearSearchResults,
-  clearUserHits,
-  setUserHits,
-} from '../redux/slices/searchSlice';
 
 const Search = ({navigation}) => {
   const dispatch = useDispatch();
@@ -54,7 +49,7 @@ const Search = ({navigation}) => {
   }, []);
 
   const handleSearch = query => {
-    dispatch(searchUsers(query)).then(response => {
+    dispatch(searchUsers(query)).then(() => {
       // console.log(response.payload);
     });
   };
@@ -185,7 +180,6 @@ const styles = StyleSheet.create({
   },
   top: {
     height: responsiveHeight(7.5),
-    backgroundColor: 'red',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

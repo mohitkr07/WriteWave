@@ -1,19 +1,11 @@
-import {useEffect, useState} from 'react';
-import {
-  Text,
-  View,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text, View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
   responsiveHeight,
   responsiveWidth,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-import Icon from 'react-native-vector-icons/AntDesign';
 import Colors from '../../assets/colors/Colors';
 import {useDispatch, useSelector} from 'react-redux';
 import {followAction} from '../../redux/slices/general';
@@ -120,13 +112,16 @@ const renderComponent = (navigation, {item}, userId) => {
       navigation.navigate('People', {data});
     }
   };
+
   return (
-    <View style={styles.container1}>
-      <TouchableOpacity onPress={handleNavigate} style={styles.result}>
-        <View style={styles.icon}></View>
-        <Text style={styles.resultTxt}>{item?.name}</Text>
-      </TouchableOpacity>
-    </View>
+    <React.Fragment>
+      <View style={styles.container1}>
+        <TouchableOpacity onPress={handleNavigate} style={styles.result}>
+          <View style={styles.icon}></View>
+          <Text style={styles.resultTxt}>{item?.name}</Text>
+        </TouchableOpacity>
+      </View>
+    </React.Fragment>
   );
 };
 
@@ -211,7 +206,6 @@ const styles = StyleSheet.create({
   },
   top: {
     height: responsiveHeight(7.5),
-    backgroundColor: 'red',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
@@ -223,9 +217,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: 'white', // Adjust the styling as needed
-    borderRadius: 5, // Add border radius for better aesthetics
-    marginRight: 10, // Add some spacing between the input and search icon
+    backgroundColor: 'white',
+    borderRadius: 5,
+    marginRight: 10,
     fontSize: responsiveFontSize(2),
   },
   toggleSwitch: {

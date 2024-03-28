@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,6 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Pressable,
-  Button,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -17,7 +15,6 @@ import ProfilePic from '../assets/images/profile.jpg';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Ionicons';
-import Icon4 from 'react-native-vector-icons/EvilIcons';
 import SinglePost from '../components/reusable/SinglePost';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useSelector} from 'react-redux';
@@ -29,7 +26,6 @@ import {updateCoverPic} from '../redux/slices/userApiSlice';
 import {updateProfilePic} from '../redux/slices/userApiSlice';
 import Colors from '../assets/colors/Colors';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import CommentBottomSheet from '../components/general/CommentBottomSheet';
 
 const Profile = ({navigation}) => {
   // bug: somewhere data of profile is being set differently

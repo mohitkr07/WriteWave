@@ -12,7 +12,6 @@ import ImagePicker from 'react-native-image-crop-picker';
 import ViewShot from 'react-native-view-shot';
 import {useDispatch} from 'react-redux';
 import {createPost} from '../redux/slices/postSlice';
-import {getUserPosts} from '../redux/slices/userPostsSlice';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
 
 const Create = ({navigation}) => {

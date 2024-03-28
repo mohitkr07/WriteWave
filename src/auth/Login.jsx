@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {
@@ -9,11 +9,10 @@ import {
 import Colors from '../assets/colors/Colors';
 import {BASE_URL} from '../constants/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch, useSelector} from 'react-redux';
 
 const Login = ({navigation}) => {
-  const userData = useSelector(state => state?.user?.usersData);
-  const dispatch = useDispatch();
+  // const userData = useSelector(state => state?.user?.usersData);
+  // const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     email: '',

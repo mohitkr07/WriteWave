@@ -1,27 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import TestCreation from '../../assets/images/test.jpg';
 import Test2Creation from '../../assets/images/test2.jpg';
 import {
   responsiveFontSize,
   responsiveHeight,
-  responsiveScreenFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import ProfilePic from '../../assets/images/profile.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Icon4 from 'react-native-vector-icons/Fontisto';
-import CommentBottomSheet from '../general/CommentBottomSheet';
 import {hitLike} from '../../redux/slices/general';
 import {useDispatch} from 'react-redux';
 import {fetchComments, toggleComment} from '../../redux/slices/commentSlice';
 
 const SinglePost = ({post}) => {
   const dispatch = useDispatch();
-  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
-
   const [postDetail, setPostDetail] = useState(post);
   const [postLiked, setLiked] = useState(postDetail?.liked);
 

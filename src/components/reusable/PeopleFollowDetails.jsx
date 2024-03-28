@@ -1,11 +1,11 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
+  Image,
   View,
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
@@ -13,7 +13,6 @@ import {
   responsiveWidth,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-import Icon from 'react-native-vector-icons/AntDesign';
 import Colors from '../../assets/colors/Colors';
 import {useDispatch, useSelector} from 'react-redux';
 import {followAction} from '../../redux/slices/general';
@@ -51,7 +50,7 @@ const PeopleFollowDetails = ({route, navigation}) => {
     );
   }, [user]);
 
-  const handleFollowed = id => {
+  const handleFollowed = () => {
     dispatch(getUserProfile()).then(res => {
       console.log('res', res.payload);
     });
@@ -236,7 +235,6 @@ const styles = StyleSheet.create({
   },
   top: {
     height: responsiveHeight(7.5),
-    backgroundColor: 'red',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

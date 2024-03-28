@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {GestureHandlerRootView, TextInput} from 'react-native-gesture-handler';
 import {
@@ -7,9 +7,8 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import Colors from '../assets/colors/Colors';
-import {BASE_URL} from '../constants/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {loginUser, postUserData} from '../redux/slices/userSlice';
 
 const SignUp = ({navigation}) => {
@@ -39,28 +38,28 @@ const SignUp = ({navigation}) => {
     }
   };
 
-  const Login = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+  // const Login = async () => {
+  //   try {
+  //     const res = await fetch(`${BASE_URL}api/auth/login`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
+  //     if (!res.ok) {
+  //       throw new Error(`HTTP error! Status: ${res.status}`);
+  //     }
 
-      const data = await res.json();
-      await AsyncStorage.setItem('token', data.token);
-      navigation.replace('BottomTabs');
-      console.log(data.token);
-    } catch (error) {
-      console.error('Error during login:', error.message);
-    }
-  };
+  //     const data = await res.json();
+  //     await AsyncStorage.setItem('token', data.token);
+  //     navigation.replace('BottomTabs');
+  //     console.log(data.token);
+  //   } catch (error) {
+  //     console.error('Error during login:', error.message);
+  //   }
+  // };
 
   const handleChange = (key, value) => {
     setFormData({...formData, [key]: value});

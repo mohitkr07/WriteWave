@@ -1,25 +1,22 @@
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Image, Text} from 'react-native';
+import {Image} from 'react-native';
 import {Colors, Fonts, Icons} from '../constants';
 
 import CalendarScreen from '../screens/teacherScreens/teacherBottomTabnavigatorScreens/CalendarScreen';
 import ChatScreen from '../screens/teacherScreens/teacherBottomTabnavigatorScreens/ChatScreen';
-import ProfileScreen from '../screens/teacherScreens/teacherBottomTabnavigatorScreens/ProfileScreen';
 import TeacherViewStackNavigator from './TeacherViewStackNavigator';
 import FinanceScreen from '../screens/teacherScreens/teacherBottomTabnavigatorScreens/FinanceScreen';
 import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import EditProfile from '../screens/teacherScreens/ProfileDetails/EditProfile';
-import StudentDetails from '../screens/teacherScreens/ProfileDetails/StudentDetails';
 import Profile from '../screens/teacherScreens/ProfileDetails/Profile';
 
 const Tab = createBottomTabNavigator();
 
-const CustomTabBarIcon = ({focused, source, label}) => (
+const CustomTabBarIcon = ({focused, source}) => (
   <Image
     source={focused ? source.focused : source.normal}
     style={{width: responsiveWidth(6.5), height: responsiveWidth(6.5)}} // Adjust the width and height based on your design

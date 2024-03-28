@@ -43,7 +43,7 @@ const Navigator = () => {
   }, []);
 
   if (isLoading) {
-    return null; // You may want to render a loading spinner or something similar here
+    return null;
   }
 
   return (

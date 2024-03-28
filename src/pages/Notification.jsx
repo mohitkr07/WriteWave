@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   },
   top: {
     height: responsiveHeight(7.5),
-    backgroundColor: 'red',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: responsiveWidth(3),

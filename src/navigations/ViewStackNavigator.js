@@ -2,7 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../pages/Home';
 import EditProfile from '../pages/EditProfile';
-import {Text, TouchableOpacity} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../assets/colors/Colors';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,7 +13,7 @@ import PeopleFollowDetails from '../components/reusable/PeopleFollowDetails';
 
 const Stack = createNativeStackNavigator();
 
-const ViewStackNavigator = ({navigation}) => {
+const ViewStackNavigator = () => {
   const dispatch = useDispatch();
   const formData = useSelector(state => state.general.formData);
 

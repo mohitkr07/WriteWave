@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import TestCreation from '../../assets/images/test.jpg';
 import Test2Creation from '../../assets/images/test2.jpg';
 import {
   responsiveFontSize,
   responsiveHeight,
-  responsiveScreenFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ProfilePic from '../../assets/images/profile.jpg';
@@ -24,6 +22,7 @@ import {useSelector} from 'react-redux';
 
 const GeneralSinglePost = ({post, navigation}) => {
   const dispatch = useDispatch();
+  // eslint-disable-next-line no-unused-vars
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
   const userId = useSelector(state => state?.userApi?.profile?._id);
   const [postDetail, setPostDetail] = useState(post);

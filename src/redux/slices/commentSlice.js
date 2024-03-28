@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {BASE_URL} from '../../constants/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -93,6 +94,7 @@ const commentSlice = createSlice({
   name: 'comment',
   initialState: {
     comments: {},
+    replies: [],
     postId: null,
     reply: {
       replyMode: false,
@@ -111,11 +113,27 @@ const commentSlice = createSlice({
     },
     setReplyMode: (state, action) => {
       state.reply.replyMode = action.payload;
-      // console.log('setReplyMode', action.payload);
     },
     setReplyTo: (state, action) => {
       state.reply.replyTo = action.payload;
-      // console.log('setReplyTo', action.payload);
+    },
+    setRepliesVacant: (state, action) => {
+      state.replies = [];
+    },
+    likeReplyLocally: (state, action) => {
+      const {commentId, replyId, userId} = action.payload;
+      const reply = state.replies.find(
+        reply => reply.commentId === commentId,
+      ).replies;
+      const index = reply.findIndex(reply => reply._id === replyId);
+      const test = reply[index].likes.some(like => like.user === userId);
+      if (test) {
+        reply[index].likes = reply[index].likes.filter(
+          like => like.user !== userId,
+        );
+      } else {
+        reply[index].likes.push({user: userId});
+      }
     },
   },
   extraReducers: builder => {
@@ -142,9 +160,45 @@ const commentSlice = createSlice({
       .addCase(createComment.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      });
+      })
+      .addCase(getReplies.pending, (state, action) => {})
+      .addCase(getReplies.fulfilled, (state, action) => {
+        // storing fetched replies
+
+        const bool = state.replies.some(
+          reply => reply.commentId === action.payload.comment._id,
+        );
+        if (bool) {
+          const index = state.replies.findIndex(
+            reply => reply.commentId === action.payload.comment._id,
+          );
+          state.replies[index].replies = action.payload.comment.replies;
+        } else {
+          state.replies = [
+            ...state.replies,
+            {
+              commentId: action.payload.comment._id,
+              replies: action.payload.comment.replies,
+            },
+          ];
+        }
+      })
+      .addCase(getReplies.rejected, (state, action) => {
+        state.error = action.error.message;
+      })
+      .addCase(likeComment.pending, (state, action) => {})
+      .addCase(likeComment.fulfilled, (state, action) => {
+        // state.comments = action.payload;
+      })
+      .addCase(likeComment.rejected, (state, action) => {});
   },
 });
 
 export default commentSlice.reducer;
-export const {toggleComment, setReplyMode, setReplyTo} = commentSlice.actions;
+export const {
+  toggleComment,
+  setReplyMode,
+  setReplyTo,
+  setRepliesVacant,
+  likeReplyLocally,
+} = commentSlice.actions;

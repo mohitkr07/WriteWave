@@ -1,12 +1,5 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Touchable,
-  Pressable,
-  Image,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
   responsiveFontSize,
@@ -14,8 +7,55 @@ import {
 } from 'react-native-responsive-dimensions';
 import Colors from '../../assets/colors/Colors';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
+import {useDispatch} from 'react-redux';
+import {
+  setReplyMode,
+  setReplyTo,
+  likeComment,
+  likeReplyLocally,
+} from '../../redux/slices/commentSlice';
+import {useSelector} from 'react-redux';
 
-const Reply = ({item}) => {
+const Reply = ({item, commentId}) => {
+  const dispatch = useDispatch();
+  const profile_id = useSelector(state => state?.userApi?.profile?._id);
+  const [isLiked, setIsLiked] = React.useState(false);
+
+  useEffect(() => {
+    const liked = item?.likes?.some(like => {
+      return like.user === profile_id;
+    });
+    setIsLiked(liked);
+  }, [item]);
+
+  const handleReplyClick = () => {
+    dispatch(setReplyMode(true));
+    dispatch(
+      setReplyTo({
+        name: item?.user?.name,
+        _id: item?.user?._id,
+        commentId: commentId,
+      }),
+    );
+  };
+
+  const handleLikeClick = () => {
+    dispatch(likeComment(item?._id)).then(res => {
+      try {
+        console.log('success', res);
+      } catch (error) {
+        console.log('failed', res);
+      }
+    });
+    dispatch(
+      likeReplyLocally({
+        commentId: commentId,
+        replyId: item?._id,
+        userId: profile_id,
+      }),
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profilePic}>
@@ -33,19 +73,21 @@ const Reply = ({item}) => {
           <View style={styles.comment}>
             <Text style={styles.commentTxt}>{item?.content}</Text>
           </View>
-          <TouchableOpacity style={styles.like}>
+          <TouchableOpacity onPress={handleReplyClick} style={styles.like}>
             <Text style={styles.replyTxt}>Reply</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.right}>
-          <Pressable>
+          <Pressable
+            onPress={handleLikeClick}
+            style={{padding: 10, paddingBottom: 2}}>
             <Icon2
-              name={false ? 'heart' : 'heart-o'}
+              name={isLiked ? 'heart' : 'heart-o'}
               size={15}
-              color={false ? '#FF0000' : Colors.GRAY}
+              color={isLiked ? '#FF0000' : Colors.GRAY}
             />
           </Pressable>
-          <Text style={styles.likeTxt}>4</Text>
+          <Text style={styles.likeTxt}>{item?.likes?.length}</Text>
         </View>
       </View>
     </View>
@@ -78,7 +120,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 2,
     marginTop: 10,
   },
   likeTxt: {

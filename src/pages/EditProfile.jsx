@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {
-  responsiveHeight,
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {responsiveWidth} from 'react-native-responsive-dimensions';
 import Colors from '../assets/colors/Colors';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {TextInput, GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -11,7 +8,7 @@ import Icon2 from 'react-native-vector-icons/Feather';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUser} from '../redux/slices/general';
 
-const EditProfile = props => {
+const EditProfile = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.userApi.profile);
   const [formData, setFormData] = useState({

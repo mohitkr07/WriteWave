@@ -1,4 +1,4 @@
-export default Colors = {
+const Colors = {
   PRIMARY: '#190482',
   PRIMARY_LIGHT: '#7752FE',
   LIGHT_PURPLE: '#8E8FFA',
@@ -10,3 +10,5 @@ export default Colors = {
   BG3: '#e6e8e6',
   GRAY: 'gray',
 };
+
+export default Colors;
