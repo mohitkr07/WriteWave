@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
@@ -14,12 +14,13 @@ import {
   likeComment,
   likeReplyLocally,
 } from '../../redux/slices/commentSlice';
+import DefaultProfile from '../../assets/images/DefaultProfile.png';
 import {useSelector} from 'react-redux';
 
 const Reply = ({item, commentId}) => {
   const dispatch = useDispatch();
   const profile_id = useSelector(state => state?.userApi?.profile?._id);
-  const [isLiked, setIsLiked] = React.useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const liked = item?.likes?.some(like => {
@@ -60,8 +61,18 @@ const Reply = ({item, commentId}) => {
     <View style={styles.container}>
       <View style={styles.profilePic}>
         <Image
-          style={{flex: 1, resizeMode: 'cover', borderRadius: 50}}
-          source={{uri: item?.user?.profilePicture}}
+          style={{
+            height: '100%',
+            width: '100%',
+            flex: 1,
+            resizeMode: 'cover',
+            borderRadius: 50,
+          }}
+          source={
+            item?.user?.profilePicture
+              ? {uri: item?.user?.profilePicture}
+              : DefaultProfile
+          }
         />
       </View>
       <View style={styles.info}>

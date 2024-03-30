@@ -24,6 +24,27 @@ export const getFeedPosts = createAsyncThunk(
   },
 );
 
+export const hitLike = createAsyncThunk(
+  'like/hitLike',
+  async (postId, thunkAPI) => {
+    const token = await getToken();
+    try {
+      const response = await fetch(`${BASE_URL}api/user/like/${postId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({liked: true}),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({error: error.message});
+    }
+  },
+);
+
 const feedSlice = createSlice({
   name: 'feed',
   initialState: {

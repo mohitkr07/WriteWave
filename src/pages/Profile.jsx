@@ -12,6 +12,7 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ProfilePic from '../assets/images/profile.jpg';
+import DefaultProfile from '../assets/images/DefaultProfile.png';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Ionicons';
@@ -181,7 +182,7 @@ const Profile = ({navigation}) => {
                   source={
                     user?.profilePicture
                       ? {uri: user?.profilePicture}
-                      : ProfilePic
+                      : DefaultProfile
                   }
                 />
               </View>

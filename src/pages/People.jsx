@@ -12,6 +12,7 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ProfilePic from '../assets/images/profile.jpg';
+import DefaultProfile from '../assets/images/DefaultProfile.png';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import SinglePost from '../components/reusable/SinglePost';
 import {useSelector} from 'react-redux';
@@ -31,8 +32,6 @@ const People = ({navigation, route}) => {
   const userId = route?.params?.data?.id;
   const selfId = useSelector(state => state.userApi.profile._id);
 
-  console.log('actual id', userId);
-
   useEffect(() => {
     fetchPeopleProfile();
   }, [userId]);
@@ -49,7 +48,7 @@ const People = ({navigation, route}) => {
       // console.log('People_peoplePosts', response.payload.posts);
       setPosts(response.payload.posts);
     });
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const exists = people?.followers?.some(obj => obj._id === selfId);
@@ -99,7 +98,7 @@ const People = ({navigation, route}) => {
                 source={
                   people?.profilePicture
                     ? {uri: people?.profilePicture}
-                    : ProfilePic
+                    : DefaultProfile
                 }
               />
             </View>

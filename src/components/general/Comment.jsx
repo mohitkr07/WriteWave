@@ -17,12 +17,13 @@ import {
   setReplyMode,
   setReplyTo,
 } from '../../redux/slices/commentSlice';
-import {addReply} from '../../redux/slices/commentSlice';
-
+import DefaultProfile from '../../assets/images/DefaultProfile.png';
 import PropTypes from 'prop-types';
 
-const Comment = ({item}) => {
+const Comment = prop => {
+  const [item, setItem] = useState(prop.item);
   const dispatch = useDispatch();
+  const userId = useSelector(state => state?.userApi?.profile?._id);
   const replies = item?.replies;
   const [showReplies, setShowReplies] = useState(false);
   const populatedReplies1 = useSelector(state => state?.comment?.replies)?.find(
@@ -34,9 +35,10 @@ const Comment = ({item}) => {
 
   useEffect(() => {
     const likedd = item?.likes?.some(like => {
-      return like.user === item?.user?._id;
+      return like.user === userId;
     });
     setLiked(likedd);
+    console.log('executed', likedd);
   }, [item]);
 
   useEffect(() => {
@@ -70,17 +72,45 @@ const Comment = ({item}) => {
 
   const handleLikeClick = () => {
     const commentId = item?._id;
-    dispatch(likeComment(commentId)).then(res => {
-      dispatch(fetchComments(item?.post));
-    });
+    setLiked(!liked);
+
+    const alreadyLiked = item?.likes?.some(like => like.user === userId);
+
+    setItem(prevItem => ({
+      ...prevItem,
+      likes: alreadyLiked
+        ? prevItem.likes.filter(like => like.user !== userId)
+        : [...prevItem.likes, {user: userId}],
+    }));
+
+    dispatch(likeComment(commentId))
+      .then(res => {
+        setItem(res?.payload?.comment);
+      })
+      .catch(error => {
+        setItem(prop.item);
+        setLiked(!liked);
+        console.error(error);
+      });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profilePic}>
         <Image
-          style={{flex: 1, resizeMode: 'cover', borderRadius: 50}}
-          source={{uri: item?.user?.profilePicture}}
+          style={{
+            height: '100%',
+            width: '100%',
+            flex: 1,
+            resizeMode: 'cover',
+            borderRadius: 50,
+          }}
+          // source={{uri: item?.user?.profilePicture}}
+          source={
+            item?.user?.profilePicture
+              ? {uri: item?.user?.profilePicture}
+              : DefaultProfile
+          }
         />
       </View>
       <View style={styles.info}>

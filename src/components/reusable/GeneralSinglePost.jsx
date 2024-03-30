@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Icon4 from 'react-native-vector-icons/Fontisto';
-import {hitLike} from '../../redux/slices/general';
+import {hitLike} from '../../redux/slices/feedSlice';
 import {useDispatch} from 'react-redux';
 import {
   GestureHandlerRootView,
@@ -19,24 +19,52 @@ import {
 } from 'react-native-gesture-handler';
 import Colors from '../../assets/colors/Colors';
 import {useSelector} from 'react-redux';
+import {fetchComments, toggleComment} from '../../redux/slices/commentSlice';
 
 const GeneralSinglePost = ({post, navigation}) => {
   const dispatch = useDispatch();
-  // eslint-disable-next-line no-unused-vars
-  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
   const userId = useSelector(state => state?.userApi?.profile?._id);
   const [postDetail, setPostDetail] = useState(post);
   const [postLiked, setLiked] = useState(postDetail?.liked);
 
   const handleCommentPress = () => {
-    setCommentModalVisible(true);
+    dispatch(toggleComment(true));
+    dispatch(fetchComments(post?._id)).then(res => {
+      console.log(res.payload.comments);
+    });
+    console.log(post);
   };
 
+  // Another Optimistic Idea: We can only send the no. of likes from the server and update the UI accordingly
+  // If user clicks on the number of likes, then we can fetch the users who liked the post.
+
   const handleLike = () => {
-    dispatch(hitLike(postDetail?._id)).then(res => {
-      setPostDetail(res.payload.post);
-      setLiked(!postLiked);
-    });
+    // Optimistically update the UI
+    const alreadyLiked = postDetail.likes.some(
+      like => like?.user?._id === userId,
+    );
+
+    setPostDetail(prevPostDetail => ({
+      ...prevPostDetail,
+      likes: alreadyLiked
+        ? prevPostDetail.likes.filter(like => like?.user?._id !== userId)
+        : [...prevPostDetail.likes, {user: {_id: userId}}],
+    }));
+
+    setLiked(!postLiked);
+
+    // Send the API request
+    dispatch(hitLike(postDetail?._id))
+      .then(res => {
+        // If the API request is successful, update the state with the actual data from the server
+        setPostDetail(res.payload.post);
+      })
+      .catch(error => {
+        // If the API request fails, revert the UI back to its original state and show an error message
+        setPostDetail(post);
+        setLiked(postLiked);
+        console.error(error);
+      });
   };
 
   const handleNavigate = () => {
