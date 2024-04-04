@@ -93,7 +93,7 @@ export const likeComment = createAsyncThunk(
 const commentSlice = createSlice({
   name: 'comment',
   initialState: {
-    comments: {},
+    comments: [],
     replies: [],
     postId: null,
     reply: {

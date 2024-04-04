@@ -6,7 +6,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import ProfilePic from '../../assets/images/profile.jpg';
+import ProfilePic from '../../assets/images/DefaultProfile.png';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import Icon3 from 'react-native-vector-icons/Feather';

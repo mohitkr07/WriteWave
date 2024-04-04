@@ -9,7 +9,7 @@ import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import {View} from 'react-native';
-import Create from '../pages/Create';
+import CreateStackNavigator from './CreateStackNavigator';
 import {useDispatch} from 'react-redux';
 import {getUserProfile} from '../redux/slices/userApiSlice';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -125,9 +125,9 @@ const BottomTabNavigator = () => {
         />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen
-          options={{tabBarLabel: 'Create'}}
+          options={{tabBarLabel: 'Create', headerShown: false}}
           name="Post"
-          component={Create}
+          component={CreateStackNavigator}
         />
         <Tab.Screen name="Notification" component={Notification} />
         <Tab.Screen name="Profile" component={Profile} />

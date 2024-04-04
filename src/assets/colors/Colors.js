@@ -1,5 +1,6 @@
 const Colors = {
   PRIMARY: '#190482',
+  NAVBAR: '#2202c4',
   PRIMARY_LIGHT: '#7752FE',
   LIGHT_PURPLE: '#8E8FFA',
   TEXT: 'black',

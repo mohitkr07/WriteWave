@@ -34,6 +34,10 @@ const Comment = prop => {
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
+    setItem(prop.item);
+  }, [prop.item]);
+
+  useEffect(() => {
     const likedd = item?.likes?.some(like => {
       return like.user === userId;
     });
