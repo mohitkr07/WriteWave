@@ -102,7 +102,7 @@ const SignUp = ({navigation}) => {
             </TouchableOpacity>
           </View>
 
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
@@ -115,7 +115,7 @@ const SignUp = ({navigation}) => {
             <TouchableOpacity style={styles.loginWGoogle}>
               <Text style={styles.googleAuthTxt}>Signup with Google</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <View style={styles.loginOption}>
             <Text style={{color: Colors.TEXT}}>Already have an account?</Text>

@@ -27,18 +27,23 @@ const ViewStackNavigator = () => {
 
   return (
     <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{headerShown: false}}
+      />
       <Stack.Screen name="People" component={People} />
       <Stack.Screen name="Follow" component={FollowDetails} />
       <Stack.Screen name="FollowPeople" component={PeopleFollowDetails} />
       <Stack.Screen
         options={{
-          title: 'Edit Profile',
-          headerRight: () => (
-            <TouchableOpacity onPress={() => handleUpdate()}>
-              <Icon name="done" size={33} color={Colors.TEXT} />
-            </TouchableOpacity>
-          ),
+          // title: 'Edit Profile',
+          // headerRight: () => (
+          //   <TouchableOpacity onPress={() => handleUpdate()}>
+          //     <Icon name="done" size={33} color={Colors.TEXT} />
+          //   </TouchableOpacity>
+          // ),
+          headerShown: false,
         }}
         name="EditProfile"
         component={EditProfile}

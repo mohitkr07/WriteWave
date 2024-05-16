@@ -7,10 +7,14 @@ import {TextInput, GestureHandlerRootView} from 'react-native-gesture-handler';
 import Icon2 from 'react-native-vector-icons/Feather';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUser} from '../redux/slices/general';
+import Loader from '../components/general/Loader';
+import NavBar from '../components/navBar/NavBar';
+import {setProfile, updateUserProfile} from '../redux/slices/userApiSlice';
 
-const EditProfile = () => {
+const EditProfile = ({navigation}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.userApi.profile);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name,
     email: user?.email,
@@ -26,8 +30,25 @@ const EditProfile = () => {
     dispatch(setUser(formData));
   }, [formData]);
 
+  const handleReaction = () => {
+    setLoading(true);
+    dispatch(updateUserProfile(formData)).then(response => {
+      dispatch(setProfile(response.payload.user));
+      setLoading(false);
+      navigation.navigate('Profile');
+      console.log('response', response);
+    });
+  };
+
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavBar
+        title="Edit Profile"
+        navigation={navigation}
+        navigateTo={'Profile'}
+        checkAction={true}
+        reaction={handleReaction}
+      />
       <ScrollView>
         {/* <View style={styles.container}></View> */}
 
@@ -80,6 +101,7 @@ const EditProfile = () => {
           </View>
         </View>
       </ScrollView>
+      {loading && <Loader />}
     </GestureHandlerRootView>
   );
 };

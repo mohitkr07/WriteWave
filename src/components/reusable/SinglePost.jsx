@@ -21,6 +21,10 @@ const SinglePost = ({post}) => {
   const [postLiked, setLiked] = useState(postDetail?.liked);
   const userId = useSelector(state => state?.userApi?.profile?._id);
 
+  console.log('post', post);
+
+  // console.log('postDetail', postDetail);
+
   const handleCommentPress = () => {
     dispatch(toggleComment(true));
     dispatch(fetchComments(postDetail?._id)).then(res => {
@@ -123,7 +127,7 @@ const SinglePost = ({post}) => {
       </View>
       <View style={styles.tags}>
         <Text style={{color: '#7E30E1'}}>
-          #alone #meaningful #relatable #alone_soul #life{' '}
+          #alone #meaningful #relatable #life{' '}
         </Text>
       </View>
     </View>

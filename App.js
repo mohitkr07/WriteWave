@@ -2,14 +2,12 @@ import React from 'react';
 import Navigator from './src/navigations/Navigator';
 import {Provider} from 'react-redux';
 import store from './src/redux/app/store';
-// import Animation from './playground/Animation';
 
 const App = () => {
   return (
     <Provider store={store}>
       <Navigator />
     </Provider>
-    // <Animation />
   );
 };
 

@@ -14,15 +14,16 @@ const NavBar = ({
   navigateTo,
   checkAction,
   checkActionNavigateTo,
+  reaction,
 }) => {
   const handleNavigation = () => {
     navigateTo ? navigation.navigate(navigateTo) : navigation.goBack();
   };
 
   const handleCheckAction = () => {
-    if (checkAction) {
+    if (checkActionNavigateTo) {
       navigation.navigate(checkActionNavigateTo);
-    }
+    } else reaction();
   };
 
   return (

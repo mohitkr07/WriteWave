@@ -21,10 +21,12 @@ const Notification = ({navigation}) => {
       </View>
       <FlatList
         horizontal={false}
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 23, 23, 23, 232, 323, 23]}
+        data={[1]}
         renderItem={() => (
           <View style={styles.notification}>
-            <Text style={{color: Colors.TEXT}}>Hi Mohit</Text>
+            <Text style={{color: Colors.TEXT, textAlign: 'center'}}>
+              ---------------Yet to be Implemented---------------
+            </Text>
           </View>
         )}
       />

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -20,12 +20,15 @@ import Colors from '../assets/colors/Colors';
 import NavBar from '../components/navBar/NavBar';
 import {useSelector} from 'react-redux';
 import ProfilePicture from '../assets/images/profile.jpg';
+import Loader from '../components/general/Loader';
 
 const QuoteScreen = ({navigation}) => {
   const dispatch = useDispatch();
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [textOnImage, setTextOnImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(
+    'https://res.cloudinary.com/dbx7oqxpd/image/upload/v1715875266/quj5j0feffbj3ut9tcaj.jpg',
+  );
   const quote = useSelector(state => state.createQuote.content);
+  const [loading, setLoading] = useState(false);
   const touch = useRef(new Animated.ValueXY({x: 0, y: 0})).current;
 
   const handleImagePicker = async () => {
@@ -46,46 +49,24 @@ const QuoteScreen = ({navigation}) => {
   const handleSaveImage = async () => {
     if (selectedImage) {
       try {
-        const result = await viewShotRef.current.capture(); // Capture the view
-        // You can save or upload the 'result' image here
-        setSelectedImage(result);
-        setTextOnImage('kjk');
-        Alert.alert('Saved', `Text: ${textOnImage}`);
+        const result = await viewShotRef.current.capture();
+        const formData = new FormData();
+        formData.append('image', {
+          uri: result,
+          type: 'image/jpeg',
+          name: 'image.jpg',
+        });
+
+        dispatch(createPost(formData)).then(response => {
+          console.log('response', response.payload);
+          setLoading(false);
+          navigation.navigate('Profile');
+        });
       } catch (error) {
         console.error('Error capturing image:', error);
       }
     } else {
       Alert.alert('Error', 'Please choose an image first');
-    }
-  };
-
-  //   useEffect(() => {
-  //     return () => {
-  //       setSelectedImage(null);
-  //       setTextOnImage(null);
-  //     };
-  //   }, []);
-
-  const uploadImage = async () => {
-    try {
-      if (!selectedImage) {
-        console.error('No image selected');
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('image', {
-        uri: selectedImage,
-        type: 'image/jpeg',
-        name: 'image.jpg',
-      });
-
-      dispatch(createPost(formData)).then(response => {
-        console.log('response', response.payload);
-        navigation.navigate('Profile');
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error.message);
     }
   };
 
@@ -99,13 +80,20 @@ const QuoteScreen = ({navigation}) => {
     setTextHeight(height);
   };
 
+  const handleReaction = () => {
+    setLoading(true);
+    handleSaveImage();
+    // uploadImage();
+  };
+
   return (
     <>
       <NavBar
         title="Theme"
         navigation={navigation}
         checkAction={true}
-        checkActionNavigateTo="QuoteScreen"
+        checkActionNavigateTo={false}
+        reaction={handleReaction}
       />
       <View
         onStartShouldSetResponder={() => true}
@@ -155,20 +143,7 @@ const QuoteScreen = ({navigation}) => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.button, {elevation: 0, backgroundColor: Colors.BG2}]}
-          onPress={handleSaveImage}>
-          <Text>Save Image with Text</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {elevation: 0, backgroundColor: Colors.LIGHT_PURPLE},
-          ]}
-          onPress={uploadImage}>
-          <Text>Upload Image</Text>
-        </TouchableOpacity>
+        {loading && <Loader />}
       </View>
     </>
   );

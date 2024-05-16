@@ -77,6 +77,8 @@ const GeneralSinglePost = ({post, navigation}) => {
     }
   };
 
+  console.log(postDetail);
+
   return (
     <GestureHandlerRootView>
       <View style={styles.container}>
@@ -87,7 +89,14 @@ const GeneralSinglePost = ({post, navigation}) => {
               onPress={handleNavigate}
               activeOpacity={0.7}
               style={styles.creatorPic}>
-              <Image style={styles.profilePic} source={ProfilePic} />
+              <Image
+                style={styles.profilePic}
+                source={
+                  postDetail?.author?.profilePicture
+                    ? {uri: postDetail?.author?.profilePicture}
+                    : ProfilePic
+                }
+              />
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.7} onPress={handleNavigate}>
               <Text style={styles.creatorName}>{postDetail?.author?.name}</Text>
@@ -156,6 +165,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingBottom: 10,
+    marginBottom: 3,
+    backgroundColor: Colors.WHITE,
   },
   tags: {
     paddingHorizontal: responsiveWidth(3),

@@ -75,20 +75,20 @@ const Login = ({navigation}) => {
             </TouchableOpacity>
           </View>
 
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <Text style={{color: Colors.TEXT}}>or</Text>
-          </View>
+          </View> */}
 
-          <View style={styles.otherAuths}>
+          {/* <View style={styles.otherAuths}>
             <TouchableOpacity style={styles.loginWGoogle}>
               <Text style={styles.googleAuthTxt}>Login with Google</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <View style={styles.loginOption}>
             <Text style={{color: Colors.TEXT}}>New to WriteWave?</Text>

@@ -27,13 +27,15 @@ import {updateCoverPic} from '../redux/slices/userApiSlice';
 import {updateProfilePic} from '../redux/slices/userApiSlice';
 import Colors from '../assets/colors/Colors';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Loader from '../components/general/Loader';
 
 const Profile = ({navigation}) => {
   // bug: somewhere data of profile is being set differently
   const dispatch = useDispatch();
   const user = useSelector(state => state?.userApi?.profile);
   const allPosts = useSelector(state => state?.userPosts?.posts);
-  const [posts, setPosts] = useState(allPosts || []);
+  // const [posts, setPosts] = useState(allPosts || []);
+  const [loading, setLoading] = useState(true);
   // const [profilePic, setProfilePic] = useState(ProfilePic);
 
   // console.log(user);
@@ -46,17 +48,26 @@ const Profile = ({navigation}) => {
   );
 
   const fetchPosts = async () => {
-    try {
-      const res = await dispatch(getUserPosts());
-      const msg = res.payload.message;
-      if (msg === 'Posts fetched') {
-        setPosts(res.payload.posts);
-      } else {
-        console.log('error fetching posts');
-      }
-    } catch (error) {
-      console.error('An error occurred while fetching posts:', error);
-    }
+    setLoading(true);
+    // try {
+    //   const res = await dispatch(getUserPosts());
+    //   const msg = res.payload.message;
+    //   if (msg === 'Posts fetched') {
+    //     setPosts(res.payload.posts);
+    //     console.log('Posts fetched:', res.payload.posts);
+    //     console.log('Posts:', allPosts);
+    //     setLoading(false);
+    //   } else {
+    //     console.log('error fetching posts');
+    //   }
+    // } catch (error) {
+    //   console.error('An error occurred while fetching posts:', error);
+    // }
+    dispatch(getUserPosts()).then(res => {
+      console.log('Posts fetched:', res.payload.posts);
+      console.log('Posts:', allPosts);
+      setLoading(false);
+    });
   };
 
   const handleEditPress = () => {
@@ -90,6 +101,7 @@ const Profile = ({navigation}) => {
   };
 
   const uploadCover = async coverPic => {
+    setLoading(true);
     try {
       if (!coverPic) {
         console.error('No image selected');
@@ -105,7 +117,9 @@ const Profile = ({navigation}) => {
 
       dispatch(updateCoverPic(formData)).then(response => {
         console.log('response', response.payload);
-        dispatch(getUserProfile());
+        dispatch(getUserProfile()).then(() => {
+          setLoading(false);
+        });
       });
     } catch (error) {
       console.error('Error uploading image:', error.message);
@@ -113,6 +127,7 @@ const Profile = ({navigation}) => {
   };
 
   const uploadProfilePic = async profilePic => {
+    setLoading(true);
     try {
       if (!profilePic) {
         console.error('No image selected');
@@ -126,9 +141,11 @@ const Profile = ({navigation}) => {
         name: 'image.jpg',
       });
 
-      dispatch(updateProfilePic(formData)).then(response => {
-        console.log('response', response.payload);
-        dispatch(getUserProfile());
+      dispatch(updateProfilePic(formData)).then(() => {
+        dispatch(getUserProfile()).then(res => {
+          console.log('response', res.payload);
+          setLoading(false);
+        });
       });
     } catch (error) {
       console.error('Error uploading image:', error.message);
@@ -239,7 +256,7 @@ const Profile = ({navigation}) => {
           <TouchableOpacity style={styles.posts}>
             <Text
               style={{color: '#190482', fontSize: responsiveFontSize(2.08)}}>
-              Posts ({posts.length})
+              Posts ({allPosts.length})
             </Text>
           </TouchableOpacity>
           <View style={styles.viewOptions}>
@@ -247,12 +264,13 @@ const Profile = ({navigation}) => {
           </View>
         </View>
 
-        {posts.length > 0 &&
-          posts.map((post, index) => {
+        {!loading &&
+          allPosts.length > 0 &&
+          allPosts.map((post, index) => {
             return <SinglePost key={index} post={post} />;
           })}
       </ScrollView>
-      {/* <CommentBottomSheet /> */}
+      {loading && <Loader />}
     </GestureHandlerRootView>
   );
 };
@@ -283,7 +301,7 @@ const styles = StyleSheet.create({
   cover: {
     height: responsiveWidth(30),
     width: '100%',
-    backgroundColor: '#190482',
+    backgroundColor: Colors.WHITE,
     position: 'absolute',
     // overflow: 'hidden',
   },
